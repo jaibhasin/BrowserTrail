@@ -1,0 +1,45 @@
+export const PROTOCOL_CHIPS = [
+  {
+    id: 'dns',
+    name: 'DNS',
+    phase: 'dns',
+    summary: 'Translates domain names into IP addresses.',
+    wiki: 'https://en.wikipedia.org/wiki/Domain_Name_System',
+  },
+  {
+    id: 'udp',
+    name: 'UDP',
+    phase: 'route',
+    summary: 'Traceroute probes often use ICMP/UDP datagrams.',
+    wiki: 'https://en.wikipedia.org/wiki/User_Datagram_Protocol',
+  },
+  {
+    id: 'tcp',
+    name: 'TCP',
+    phase: 'tcp',
+    summary: 'Reliable transport with a three-way handshake.',
+    wiki: 'https://en.wikipedia.org/wiki/Transmission_Control_Protocol',
+  },
+  {
+    id: 'tls',
+    name: 'TLS',
+    phase: 'tls',
+    summary: 'Encrypts the channel between client and server.',
+    wiki: 'https://en.wikipedia.org/wiki/Transport_Layer_Security',
+  },
+  {
+    id: 'http',
+    name: 'HTTP',
+    phase: 'http',
+    summary: 'Application protocol for web requests and responses.',
+    wiki: 'https://en.wikipedia.org/wiki/HTTP',
+  },
+  {
+    id: 'http2',
+    name: 'HTTP/2',
+    phase: 'http',
+    summary: 'Multiplexed HTTP over a single connection.',
+    wiki: 'https://en.wikipedia.org/wiki/HTTP/2',
+    conditional: (results) => results?.http?.httpVersion?.startsWith('HTTP/2'),
+  },
+];
