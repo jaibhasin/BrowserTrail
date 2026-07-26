@@ -9,7 +9,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: jaibhasin/prbot@v0.1.0
+      - uses: jaibhasin/prbot@v0.1.1
         with:
           openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
