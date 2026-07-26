@@ -1,0 +1,113 @@
+/* ── Journey replay controls ── */
+
+.journey-replay-minimal {
+  width: min(1100px, calc(100vw - 48px));
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+}
+
+.journey-replay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.journey-replay-title {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.journey-replay-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.replay-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(11, 20, 35, 0.8);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+.replay-btn:hover {
+  border-color: var(--line-strong);
+  color: var(--cyan);
+}
+
+.replay-speed-group {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(4, 10, 20, 0.5);
+}
+
+.replay-speed-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.replay-speed-btn:hover {
+  color: var(--cyan);
+}
+
+.replay-speed-active {
+  background: rgba(68, 200, 255, 0.18);
+  color: var(--cyan);
+  box-shadow: 0 0 12px rgba(68, 200, 255, 0.15);
+}
+
+.journey-replay-phases {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.replay-phase-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+}
+
+.replay-phase-btn:hover {
+  border-color: var(--line-strong);
+  color: var(--cyan);
+}
+
+.journey-replay-scrubber {
+  width: 100%;
+  accent-color: var(--cyan-strong);
+}
+
+.journey-replay-time {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}

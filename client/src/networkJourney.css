@@ -1,0 +1,152 @@
+/* ── Journey (minimal) ── */
+
+.network-journey-minimal {
+  width: min(1100px, calc(100vw - 48px));
+  flex: 1;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+}
+
+.app-minimal-with-journey .network-journey-minimal {
+  flex: 0 0 auto;
+  height: min(50vh, 440px);
+}
+
+.journey-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.journey-edge {
+  stroke-linecap: round;
+  transition: stroke 0.4s ease;
+}
+
+.journey-edge-dormant {
+  stroke: rgba(132, 232, 255, 0.12);
+}
+
+.journey-edge-dns {
+  stroke: rgba(201, 160, 255, 0.45);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.journey-node-ring {
+  fill: rgba(11, 20, 35, 0.85);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+}
+
+.journey-node-icon {
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.journey-node-glyph {
+  color: var(--cyan);
+  pointer-events: none;
+}
+
+.journey-node-laptop .journey-node-glyph { color: var(--text); }
+.journey-node-router .journey-node-glyph { color: var(--cyan); }
+.journey-node-hop .journey-node-glyph { color: var(--cyan-strong); }
+.journey-node-dns .journey-node-glyph { color: #c9a0ff; }
+.journey-node-cdn .journey-node-glyph { color: var(--amber); }
+.journey-node-server .journey-node-glyph { color: var(--lime); }
+.journey-node-dormant .journey-node-glyph { color: var(--text-dim); opacity: 0.5; }
+
+.journey-node-pending {
+  opacity: 0.45;
+}
+
+.journey-node-pending .journey-node-ring {
+  stroke: rgba(128, 162, 205, 0.25);
+}
+
+.journey-node-reached {
+  opacity: 1;
+}
+
+.journey-node-current .journey-node-ring {
+  stroke: var(--cyan);
+  filter: drop-shadow(0 0 8px rgba(68, 200, 255, 0.55));
+}
+
+.journey-edge-pending,
+.journey-edge-lit {
+  transition: opacity 0.35s ease, stroke-width 0.35s ease;
+}
+
+.packet-label {
+  fill: var(--amber);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.packet-dot-circle {
+  transition: cx 0.05s linear, cy 0.05s linear;
+}
+
+.journey-node-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.journey-node-detail {
+  fill: var(--text-dim);
+  font-size: 9px;
+  font-family: var(--mono);
+}
+
+.journey-node-dormant .journey-node-ring {
+  opacity: 0.35;
+}
+
+.handshake-label {
+  fill: var(--amber);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.tunnel-path {
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.tunnel-unencrypted {
+  stroke: rgba(255, 126, 157, 0.35);
+  stroke-width: 2;
+}
+
+.tunnel-label {
+  fill: var(--lime);
+  font-size: 9px;
+  font-family: var(--mono);
+}
+
+.shield-icon-bg {
+  fill: rgba(6, 14, 26, 0.92);
+  stroke: rgba(181, 255, 125, 0.55);
+  stroke-width: 1;
+}
+
+.shield-glyph {
+  color: var(--lime);
+}
+
+@media (max-width: 600px) {
+  .journey-node-label {
+    font-size: 9px;
+  }
+
+  .journey-node-detail {
+    font-size: 8px;
+  }
+}

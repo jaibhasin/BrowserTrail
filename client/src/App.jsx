@@ -6,6 +6,8 @@ import { useAnalysisStream } from './hooks/useAnalysisStream.js';
 import { useJourneyReplay } from './hooks/useJourneyReplay.js';
 import { buildJourneyScript } from './utils/journeyScript.js';
 import './App.css';
+import './networkJourney.css';
+import './journeyReplay.css';
 
 export default function App() {
   const [input, setInput] = useState('');
