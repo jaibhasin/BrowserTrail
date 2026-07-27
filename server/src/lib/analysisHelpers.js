@@ -3,9 +3,7 @@
  */
 
 export function normalizeTarget(rawUrl) {
-  const normalizedUrl = rawUrl.startsWith('http://') || rawUrl.startsWith('https://')
-    ? rawUrl
-    : `https://${rawUrl}`;
+  const normalizedUrl = rawUrl.includes('://') ? rawUrl : `https://${rawUrl}`;
 
   const url = new URL(normalizedUrl);
   const { hostname, protocol, port } = url;
@@ -20,8 +18,8 @@ export function normalizeTarget(rawUrl) {
   };
 }
 
-export function buildTargetMeta(rawUrl) {
-  const target = normalizeTarget(rawUrl);
+export function buildTargetMeta(rawUrlOrTarget) {
+  const target = typeof rawUrlOrTarget === 'string' ? normalizeTarget(rawUrlOrTarget) : rawUrlOrTarget;
   return {
     original: target.original,
     normalized: target.normalized,
@@ -46,6 +44,10 @@ export function computeInsights(results) {
     if (tls.version === 'TLSv1.3') insights.push({ severity: 'good', topic: 'TLS', message: 'Using TLS 1.3 — best available' });
     else if (tls.version === 'TLSv1.2') insights.push({ severity: 'info', topic: 'TLS', message: 'Using TLS 1.2 — consider upgrading to 1.3' });
     else insights.push({ severity: 'warning', topic: 'TLS', message: `Using ${tls.version} — outdated protocol` });
+  }
+
+  if (tls?.trusted === false) {
+    insights.push({ severity: 'error', topic: 'TLS', message: `Certificate trust failed: ${tls.trustError || 'unknown validation error'}` });
   }
 
   if (route?.hops?.length > 0) {

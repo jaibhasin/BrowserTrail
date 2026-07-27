@@ -1,4 +1,5 @@
 import { runParallelAnalysis } from '../services/analyzeOrchestrator.js';
+import { prepareTarget } from '../lib/targetSafety.js';
 
 /**
  * Main analysis endpoint: /api/analyze?url=https://example.com
@@ -14,10 +15,11 @@ export async function analyzeUrl(req, res) {
   }
 
   try {
-    const results = await runParallelAnalysis(rawUrl);
+    const target = await prepareTarget(rawUrl);
+    const results = await runParallelAnalysis(rawUrl, target);
     return res.json(results);
   } catch (err) {
-    return res.status(500).json({
+    return res.status(err.statusCode || 500).json({
       error: `Analysis failed: ${err.message}`,
     });
   }

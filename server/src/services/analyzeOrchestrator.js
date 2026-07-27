@@ -3,7 +3,8 @@ import { runTraceroute } from './traceroute.js';
 import { analyzeTls } from './tls.js';
 import { fetchWithDetails } from './http.js';
 import { geolocateIps } from './geolocation.js';
-import { buildTargetMeta, finalizeResults, normalizeTarget } from '../lib/analysisHelpers.js';
+import { buildTargetMeta, finalizeResults } from '../lib/analysisHelpers.js';
+import { prepareTarget } from '../lib/targetSafety.js';
 
 const SKIPPED_TLS = {
   skipped: true,
@@ -25,17 +26,17 @@ async function safeProbe(fn) {
 /**
  * Run all probes in parallel (fast JSON endpoint).
  */
-export async function runParallelAnalysis(rawUrl) {
-  const target = normalizeTarget(rawUrl);
+export async function runParallelAnalysis(rawUrl, preparedTarget) {
+  const target = preparedTarget || await prepareTarget(rawUrl);
   const shouldAnalyzeTls = target.shouldAnalyzeTls;
 
   const [dns, route, tls, http] = await Promise.all([
-    safeProbe(() => analyzeDns(target.hostname)),
-    safeProbe(() => runTraceroute(target.hostname)),
+    safeProbe(() => analyzeDns(target.hostname, target.address)),
+    safeProbe(() => runTraceroute(target.address || target.hostname)),
     shouldAnalyzeTls
-      ? safeProbe(() => analyzeTls(target.hostname, target.port || 443))
+      ? safeProbe(() => analyzeTls(target.hostname, target.port || 443, 10000, target.address, target.addressFamily))
       : Promise.resolve(SKIPPED_TLS),
-    safeProbe(() => fetchWithDetails(target.normalized)),
+    safeProbe(() => fetchWithDetails(target.normalized, 15000, target.address, target.addressFamily)),
   ]);
 
   const results = finalizeResults({
@@ -53,8 +54,8 @@ export async function runParallelAnalysis(rawUrl) {
 /**
  * Run probes sequentially, emitting SSE events via sendEvent.
  */
-export async function runSequentialAnalysis(rawUrl, sendEvent) {
-  const target = normalizeTarget(rawUrl);
+export async function runSequentialAnalysis(rawUrl, sendEvent, preparedTarget) {
+  const target = preparedTarget || await prepareTarget(rawUrl);
   const partial = {
     target: buildTargetMeta(rawUrl),
     dns: null,
@@ -70,12 +71,12 @@ export async function runSequentialAnalysis(rawUrl, sendEvent) {
     sendEvent('phase:start', { phase });
 
     if (phase === 'dns') {
-      partial.dns = await safeProbe(() => analyzeDns(target.hostname));
+      partial.dns = await safeProbe(() => analyzeDns(target.hostname, target.address));
       sendEvent('phase:complete', { phase, data: partial.dns });
     }
 
     if (phase === 'route') {
-      partial.route = await safeProbe(() => runTraceroute(target.hostname));
+      partial.route = await safeProbe(() => runTraceroute(target.address || target.hostname));
       sendEvent('phase:complete', { phase, data: partial.route });
     }
 
@@ -88,7 +89,7 @@ export async function runSequentialAnalysis(rawUrl, sendEvent) {
 
     if (phase === 'tls') {
       if (target.shouldAnalyzeTls) {
-        partial.tls = await safeProbe(() => analyzeTls(target.hostname, target.port || 443));
+        partial.tls = await safeProbe(() => analyzeTls(target.hostname, target.port || 443, 10000, target.address, target.addressFamily));
       } else {
         partial.tls = SKIPPED_TLS;
       }
@@ -96,7 +97,7 @@ export async function runSequentialAnalysis(rawUrl, sendEvent) {
     }
 
     if (phase === 'http') {
-      partial.http = await safeProbe(() => fetchWithDetails(target.normalized));
+      partial.http = await safeProbe(() => fetchWithDetails(target.normalized, 15000, target.address, target.addressFamily));
       sendEvent('phase:complete', { phase, data: partial.http });
     }
   }

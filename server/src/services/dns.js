@@ -12,7 +12,7 @@ import * as dns from 'dns/promises';
  *   DNS is the phonebook of the internet. Every web request starts here.
  *   Slow DNS = slow page loads, regardless of server performance.
  */
-export async function analyzeDns(hostname) {
+export async function analyzeDns(hostname, pinnedAddress = null) {
   const start = performance.now();
   const results = { records: {}, queryTime: 0, error: null, resolvedIp: null, resolverAddress: null };
 
@@ -24,7 +24,7 @@ export async function analyzeDns(hostname) {
   try {
     // ── Resolve the primary address ──
     //   lookup() gives us a fast connectable address even for IPv6-only hosts.
-    const primaryAddress = await dns.lookup(hostname);
+    const primaryAddress = pinnedAddress ? { address: pinnedAddress } : await dns.lookup(hostname);
     results.resolvedIp = primaryAddress.address;
 
     // ── Query all DNS record types in parallel ──

@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as https from 'https';
 import { URL } from 'url';
+import { createPinnedLookup } from '../lib/targetSafety.js';
 
 /**
  * Fetches a URL with detailed timing and header analysis.
@@ -15,7 +16,7 @@ import { URL } from 'url';
  *
  * All timings are in milliseconds, matching browser DevTools convention.
  */
-export async function fetchWithDetails(urlString, timeoutMs = 15000) {
+export async function fetchWithDetails(urlString, timeoutMs = 15000, pinnedAddress = null, addressFamily = null) {
   const start = performance.now();
   const results = {
     url: urlString,
@@ -50,6 +51,7 @@ export async function fetchWithDetails(urlString, timeoutMs = 15000) {
         },
         timeout: timeoutMs,
       };
+      if (pinnedAddress) options.lookup = createPinnedLookup(pinnedAddress, addressFamily);
 
       const req = lib.request(options, (res) => {
         // HTTP version detection
