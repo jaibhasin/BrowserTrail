@@ -9,6 +9,10 @@ const PORT = process.env.PORT || 3100;
 app.use(cors());
 app.use(express.json());
 
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, service: 'browsertrail' });
+});
+
 app.get('/api/analyze', analyzeUrl);
 app.get('/api/analyze/stream', analyzeUrlStream);
 
