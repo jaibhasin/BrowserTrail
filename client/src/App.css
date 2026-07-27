@@ -592,6 +592,14 @@ button {
   word-break: break-all;
 }
 
+.security-good {
+  color: #8de8b7;
+}
+
+.security-bad {
+  color: #ff9ca8;
+}
+
 /* DNS records */
 .record-list {
   margin-top: 14px;

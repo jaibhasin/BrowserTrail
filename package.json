@@ -7,7 +7,8 @@
     "dev:server": "PORT=3100 npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "start:server": "npm start --prefix server",
-    "build:client": "npm run build --prefix client"
+    "build:client": "npm run build --prefix client",
+    "test:server": "npm test --prefix server"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

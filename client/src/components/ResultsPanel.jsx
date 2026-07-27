@@ -44,6 +44,7 @@ function buildSecurity(tls, headers, status) {
   if (typeof status === 'number' && status < 400) score += 8;
   const present = SECURITY_HEADERS.map((h) => ({ ...h, present: Boolean(headers?.[h.key]) }));
   score += present.filter((h) => h.present).length * 8;
+  if (tls?.trusted === false) score = Math.min(score, 20);
   const bounded = Math.min(score, 100);
   const label = bounded >= 80 ? 'Fortified' : bounded >= 60 ? 'Solid' : bounded >= 40 ? 'Thin' : 'Exposed';
   return { score: bounded, label, present };
@@ -224,6 +225,7 @@ export default function ResultsPanel({ results }) {
           <div className="card-head"><h3>TLS &amp; Certificate</h3><span className="card-meta">{tls?.version || (isHttps ? 'Hidden' : 'None')}</span></div>
           {tls?.certificate ? (
             <dl className="kv">
+              <div><dt>Trust</dt><dd className={tls.trusted === false ? 'security-bad' : 'security-good'}>{tls.trusted === false ? `Invalid - ${tls.trustError || 'verification failed'}` : tls.trusted === true ? 'Trusted' : 'Not verified'}</dd></div>
               <div><dt>Cipher</dt><dd className="mono">{tls.cipher || '—'}</dd></div>
               <div><dt>Subject</dt><dd>{commonName(tls.certificate.subject)}</dd></div>
               <div><dt>Issuer</dt><dd>{commonName(tls.certificate.issuer)}</dd></div>

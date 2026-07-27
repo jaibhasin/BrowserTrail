@@ -1,5 +1,6 @@
 import { runSequentialAnalysis } from '../services/analyzeOrchestrator.js';
 import { buildTargetMeta } from '../lib/analysisHelpers.js';
+import { prepareTarget } from '../lib/targetSafety.js';
 
 /**
  * SSE streaming analysis: GET /api/analyze/stream?url=...
@@ -12,6 +13,13 @@ export async function analyzeUrlStream(req, res) {
       error: 'Missing required query parameter: url',
       hint: 'Usage: /api/analyze/stream?url=https://example.com',
     });
+  }
+
+  let target;
+  try {
+    target = await prepareTarget(rawUrl);
+  } catch (err) {
+    return res.status(err.statusCode || 500).json({ error: err.message });
   }
 
   res.setHeader('Content-Type', 'text/event-stream');
@@ -29,9 +37,8 @@ export async function analyzeUrlStream(req, res) {
   });
 
   try {
-    const target = buildTargetMeta(rawUrl);
-    sendEvent('analysis:start', { url: rawUrl, target });
-    await runSequentialAnalysis(rawUrl, sendEvent);
+    sendEvent('analysis:start', { url: rawUrl, target: buildTargetMeta(target) });
+    await runSequentialAnalysis(rawUrl, sendEvent, target);
     res.end();
   } catch (err) {
     sendEvent('analysis:error', { error: err.message });
